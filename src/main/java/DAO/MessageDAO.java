@@ -153,17 +153,49 @@ public class MessageDAO {
 
     public void deleteMessage(int messge_id){
         Connection connection = ConnectionUtil.getConnection();
-
         try {
             String sql = "Delete from Message where message_id = ?;";
             
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, messge_id);
 
+
             ps.executeUpdate();
         }
         catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public List<Message> getMessageFromAccountID(int account_id){
+        Connection connection = ConnectionUtil.getConnection();
+        List<Message> messages = new ArrayList<>();
+
+        try {
+            String sql = "Select * from Message Join Account on Message.posted_by=Account.account_id where account_id = ?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, account_id);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            
+            while(rs.next()){
+                System.out.println("in");
+
+                Integer newMessageId = rs.getInt("message_id");
+                Integer newPost_By  = rs.getInt("posted_by");
+                String newMessageText = rs.getString("message_text");
+                Long newTimePosted = rs.getLong("time_posted_epoch");
+
+                System.out.println("out");
+
+                messages.add(new Message(newMessageId, newPost_By, newMessageText, newTimePosted));
+            }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return messages;
     }
 }

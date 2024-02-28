@@ -58,4 +58,20 @@ public class MessageService {
             return messageDAO.getMessageFromID(message_id);
         }
     }
+
+    public Message deleteMessage(int message_id){
+        Message mess = messageDAO.getMessageFromID(message_id);
+
+        if(messageDAO.getMessageFromID(message_id) != null){
+            messageDAO.deleteMessage(message_id);
+            return mess;
+        }
+        else{
+            return null;
+        }
+    }
+
+    public List<Message> getMessageByAccountId(int account_id){
+        return messageDAO.getMessageFromAccountID(account_id);        
+    }
 }
